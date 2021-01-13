@@ -1,0 +1,14 @@
+---
+# debian variables
+
+sysstat__config_path: "/etc/sysstat/sysstat"
+
+sysstat__packages:
+  - sysstat
+  - lm-sensors
+
+sysstat__sa_dir: "/var/log/sysstat"
+
+sysstat__cron_file_path: "/etc/cron.d/sysstat"
+
+sysstat__service_name: sysstat

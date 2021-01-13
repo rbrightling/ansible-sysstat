@@ -1,0 +1,7 @@
+{{ ansible_managed | comment }}
+[Unit]
+Description=Run system activity accounting tool every {{ sysstat_activity_interval }} minutes
+
+[Timer]
+OnCalendar=
+OnCalendar=*:00/{{ sysstat_activity_interval }}

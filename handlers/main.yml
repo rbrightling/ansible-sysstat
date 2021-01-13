@@ -1,0 +1,15 @@
+---
+# handlers file for sysstat
+
+- name: restart sysstat service
+  service:
+    name: "{{ sysstat__service_name }}"
+    state: restarted
+  become: true
+
+- name: restart sysstat-collect timer
+  systemd:
+    name: "{{ sysstat__collect_timer_name }}"
+    daemon_reload: true
+    state: restarted
+  become: true

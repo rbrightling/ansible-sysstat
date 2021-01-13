@@ -1,0 +1,55 @@
+---
+# tasks file for sysstat
+
+- name: include distro variables
+  include_vars: "{{ lookup('first_found', params) }}"
+  vars:
+    params:
+      files:
+        - "{{ ansible_os_family | lower }}.yml"
+        - default.yml
+      paths:
+        - '{{ playbook_dir }}/vars'
+        - '{{ role_path }}/vars'
+  tags:
+    - always
+
+- name: install sysstat packages
+  package:
+    name: "{{ sysstat__packages }}"
+    state: present
+  become: true
+  tags:
+    - install
+
+- name: template sysstat config
+  template:
+    src: sysstat.j2
+    dest: "{{ sysstat__config_path }}"
+    mode: "0644"
+    owner: root
+    group: root
+  become: true
+  tags:
+    - configure
+
+- name: start and enable sysstat service
+  service:
+    name: "{{ sysstat__service_name }}"
+    state: started
+    enabled: true
+  become: true
+  tags:
+    - service
+
+- name: include distro specific tasks
+  include_tasks: "{{ dist_tasks_file }}"
+  loop: "{{ query('first_found', params, errors='ignore') }}"
+  loop_control:
+    loop_var: "dist_tasks_file"
+  vars:
+    params:
+      files:
+        - "{{ ansible_os_family | lower }}.yml"
+  tags:
+    - always

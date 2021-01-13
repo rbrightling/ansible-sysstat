@@ -1,0 +1,18 @@
+---
+# redhat specific variables
+
+sysstat__packages:
+  - sysstat
+  - lm_sensors
+
+sysstat__config_path: "/etc/sysconfig/sysstat"
+
+sysstat__sa_dir: "/var/log/sa"
+
+sysstat__service_name: sysstat
+
+sysstat__systemd_timers:
+  - "{{ sysstat__collect_timer_name }}"
+  - "sysstat-summary.timer"
+
+sysstat__collect_timer_name: "sysstat-collect.timer"

@@ -1,0 +1,35 @@
+---
+# redhat specific tasks
+
+- name: make sysstat-collect timer override directory
+  file:
+    path: /etc/systemd/system/sysstat-collect.timer.d
+    state: directory
+    mode: "0755"
+    owner: root
+    group: root
+  become: true
+  tags:
+    - setup
+
+- name: template systemd sysstat-collect timer override
+  template:
+    src: sysstat-collect.timer.override.conf.j2
+    dest: /etc/systemd/system/sysstat-collect.timer.d/override.conf
+    mode: "0644"
+    owner: root
+  become: true
+  tags:
+    - configure
+  notify:
+    - restart sysstat-collect timer
+
+- name: start and enable sysstat timer services
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items: "{{ sysstat__systemd_timers }}"
+  become: true
+  tags:
+    - service

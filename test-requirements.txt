@@ -1,0 +1,1 @@
+molecule[test,podman,docker,lint] >= 3.0.0

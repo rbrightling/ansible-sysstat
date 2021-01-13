@@ -1,0 +1,24 @@
+---
+# Debian specific tasks
+
+- name: copy sysstat system default config
+  copy:
+    src: sysstat.default
+    dest: /etc/default/sysstat
+    mode: "0644"
+    owner: root
+    group: root
+  become: true
+  tags:
+    - configure
+
+- name: template sysstat cron file
+  template:
+    src: sysstat.cron.j2
+    dest: "{{ sysstat__cron_file_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  tags:
+    - configure
