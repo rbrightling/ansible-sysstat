@@ -1,0 +1,45 @@
+name: Test Ansible Role
+
+on: [push, pull_request]
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+     - uses: actions/checkout@v2
+     - name: Ansible Lint
+       uses: ansible/ansible-lint-action@master
+       with:
+         targets: ""
+
+  test:
+    name: molecule
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ansible:
+          - ansible210
+          - ansible29
+          - ansible28
+        distro:
+          - debian10
+        include:
+          - distro: centos8
+            ansible: ansible210
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+          architecture: 'x64'
+      - name: install tox
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox
+      - name: run tox tests
+        run: tox -e py37-${{ matrix.ansible }}-${{ matrix.distro }}
+        env:
+          PY_COLORS: '1'
+          ANSIBLE_FORCE_COLOR: '1'
+          MOLE_DRIVER: 'docker'
